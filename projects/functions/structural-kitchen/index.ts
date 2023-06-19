@@ -1,28 +1,25 @@
-// Write your createKitchen function here! ✨
-// You'll need to export it so the tests can run it.
+type Cleaner = (dirt: number, time: number) => number;
 
-export type Cleaner = (dirt: number, time?: number) => number;
-
-export type Supplier = (expense: number) => {
+type Supplier = (expense: number) => {
 	breads: number;
 	fruits: number;
 	sauces: number;
 	vegetables: number;
 };
 
-export type Stock = {
+type Stock = {
 	breads: number;
 	fruits: number;
 	sauces: number;
 	vegetables: number;
 };
 
-export type Recipe = (ingredients: Stock) => {
+type Recipe = (ingredients: Stock) => {
 	succeeded: boolean;
 	newStock: Stock;
 };
 
-export type Kitchen = (
+type Kitchen = (
 	budget: number,
 	cleaner: Cleaner,
 	supplier: Supplier
@@ -32,15 +29,15 @@ export type Kitchen = (
 	purchase: Purchase;
 	prepare: Prepare;
 };
-export type Announce = () => string;
+type Announce = () => string;
 
-export type Clean = (time: number) => void;
+type Clean = (time: number) => void;
 
-export type Purchase = (expense: number) => boolean;
+type Purchase = (expense: number) => boolean;
 
-export type Prepare = (recipe: Recipe) => boolean;
+type Prepare = (recipe: Recipe) => boolean;
 
-export function createKitchen(
+export default function createKitchen(
 	budget: number,
 	cleaner: Cleaner,
 	supplier: Supplier
@@ -58,17 +55,12 @@ export function createKitchen(
 	}
 
 	const clean: Clean = function (time: number) {
-		dirt = cleaner(dirt, time);
+		cleaner(dirt, time);
 	};
 
 	const purchase: Purchase = function (expense: number) {
 		if (budget >= expense) {
-			stock.breads = stock.breads + supplier(expense).breads;
-			stock.fruits = stock.fruits + supplier(expense).fruits;
-			stock.sauces = stock.sauces + supplier(expense).sauces;
-			stock.vegetables = stock.vegetables + supplier(expense).vegetables;
-
-			budget = budget - expense;
+			stock = supplier(expense);
 			return true;
 		}
 		return false;
@@ -76,13 +68,11 @@ export function createKitchen(
 
 	const prepare: Prepare = function (recipe: Recipe) {
 		if (dirt < 100) {
-			let recipeObject = recipe(stock);
-			if (recipeObject.succeeded) {
-				stock = recipeObject.newStock;
+			if (recipe(stock).succeeded) {
+				stock = recipe(stock).newStock;
 				dirt++;
 				return true;
 			}
-			dirt++;
 			return false;
 		}
 		return false;
