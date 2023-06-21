@@ -1,2 +1,9 @@
-// Write your unique function here! ✨
-// You'll need to export it so the tests can run it.
+export function unique() {
+	let joinedArray: string[] = [];
+	let args = [...arguments];
+	args.forEach((array: string[]) => {
+		joinedArray = joinedArray.concat(array);
+	});
+
+	return [...new Set(joinedArray)];
+}
